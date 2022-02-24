@@ -1,0 +1,87 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  LambdaS3Bucket:
+    Type: String
+    Default: ''
+  CFNCustomProviderZipFileName:
+    Type: String
+    Default: lambdas/aws-maintenance-window-reporter-latest.zip
+  DataDogAPIKey:
+    Type: String
+
+Conditions:
+  UsePublicBucket: !Equals
+    - !Ref 'LambdaS3Bucket'
+    - ''
+
+Resources:
+  ReportMaintenanceWindows:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Reports outstanding maintenance windows
+      FunctionName: report-maintenance-windows
+      Code:
+        S3Bucket: !If
+          - UsePublicBucket
+          - !Sub 'binxio-public-${AWS::Region}'
+          - !Ref 'LambdaS3Bucket'
+        S3Key: !Ref 'CFNCustomProviderZipFileName'
+      Handler: aws_maintenance_window_reporter.handle
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.8
+      Timeout: 900
+      Environment:
+        Variables:
+          DD_API_KEY: !Ref DataDogAPIKey
+          DATADOG_HOST: 'https://api.datadoghq.eu'
+
+  Policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Action:
+            - ec2:DescribeInstanceStatus
+            - rds:DescribeDBInstances
+            - rds:DescribeDBClusters
+            - rds:DescribePendingMaintenanceActions
+          Resource: "*"
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - !Ref Policy
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+
+  SchedulePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !GetAtt ReportMaintenanceWindows.Arn
+      Principal: events.amazonaws.com
+
+  Schedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: report-maintenance-windows
+      Description: Reports outstanding maintenance windows
+      ScheduleExpression: 'cron(* * * * ? *)'
+      State: ENABLED
+      Targets:
+        - Id: report-maintenance-windows
+          Arn: !GetAtt ReportMaintenanceWindows.Arn
+          Input: '{}'
+
