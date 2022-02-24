@@ -49,8 +49,10 @@ target/$(NAME)-$(VERSION).zip: setup.py src/*/*.py requirements.txt Dockerfile.l
 	pipenv run python setup.py check
 	pipenv run python setup.py build
 	pipenv run python setup.py sdist
-	docker build --build-arg ZIPFILE=$(NAME)-$(VERSION).zip -t $(NAME)-lambda:$(VERSION) -f Dockerfile.lambda . && \
-		ID=$$(docker create $(NAME)-lambda:$(VERSION) /bin/true) && \
+	docker buildx build --platform linux/amd64 \
+                --load \
+                --build-arg ZIPFILE=$(NAME)-$(VERSION).zip -t $(NAME)-lambda:$(VERSION) -f Dockerfile.lambda . && \
+		ID=$$(docker create --platform linux/amd64 $(NAME)-lambda:$(VERSION) /bin/true) && \
 		docker export $$ID | (cd target && tar -xvf - $(NAME)-$(VERSION).zip) && \
 		docker rm -f $$ID && \
 		chmod ugo+r target/$(NAME)-$(VERSION).zip
