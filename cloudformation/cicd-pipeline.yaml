@@ -65,12 +65,12 @@ Resources:
                   - s3:PutObject
                   - s3:PutObjectAcl
                 Resource: 
-                  - !Sub 'arn:aws:s3:::${S3BucketPrefix}-*/lambdas/aws-maintenance-window-reporter-*
+                  - !Sub "arn:aws:s3:::${S3BucketPrefix}-*/lambdas/aws-maintenance-window-reporter-*"
               - Effect: Allow
                 Action:
                   - ec2:DescribeRegions
                 Resource: 
-                  - '*'
+                  - "*"
               - Sid: CloudWatchLogsPolicy
                 Effect: Allow
                 Action:
@@ -78,11 +78,11 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource:
-                  - '*'
+                  - "*"
 
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub '/aws/codebuild/${Project}'
+      LogGroupName: !Sub "/aws/codebuild/${Project}"
       RetentionInDays: 7
 
