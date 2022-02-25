@@ -11,11 +11,14 @@ phases:
       docker: 19
       python: 3.7
     commands:
-      - curl -JLO https://github.com/docker/buildx/releases/download/v0.7.0/buildx-v0.7.0.linux-amd64
-      - mkdir -p ~/.docker/cli-plugins
-      - mv buildx-v0.7.0.linux-amd64 ~/.docker/cli-plugins/docker-buildx
-      - chmod a+rx ~/.docker/cli-plugins/docker-buildx
-      - echo '{"registry-mirrors": ["https://mirror.gcr.io"]}' > /etc/docker/daemon.json
+      - >
+        mkdir -p ~/.docker/cli-plugins &&
+        cd ~/.docker/cli-plugins &&
+        curl -sSL https://github.com/docker/buildx/releases/download/v0.7.0/buildx-v0.7.0.linux-amd64
+        -o docker-buildx &&
+        chmod a+rx docker-buildx
+      - >
+        echo '{"registry-mirrors": ["https://mirror.gcr.io"]}' > /etc/docker/daemon.json
       - pkill -1 dockerd
 
   build:
