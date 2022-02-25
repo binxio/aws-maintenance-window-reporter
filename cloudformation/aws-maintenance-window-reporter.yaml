@@ -7,7 +7,7 @@ Parameters:
     Default: ''
   CFNCustomProviderZipFileName:
     Type: String
-    Default: lambdas/aws-maintenance-window-reporter-0.1.1.zip
+    Default: lambdas/aws-maintenance-window-reporter-0.1.2.zip
   DataDogAPIKey:
     Type: String
 
