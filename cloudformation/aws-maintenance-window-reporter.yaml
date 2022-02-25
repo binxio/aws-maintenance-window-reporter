@@ -34,8 +34,15 @@ Resources:
       Timeout: 900
       Environment:
         Variables:
-          DD_API_KEY: !Ref DataDogAPIKey
+          DD_API_KEY: !Sub 'ssm://${DDAPIKey}'
           DATADOG_HOST: 'https://api.datadoghq.eu'
+
+  DDAPIKey:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: aws-maintenance-window-reporter/datadog-api-key
+      Type: String
+      Value: !Ref DataDogAPIKey
 
   Policy:
     Type: AWS::IAM::ManagedPolicy
@@ -50,6 +57,10 @@ Resources:
             - rds:DescribeDBClusters
             - rds:DescribePendingMaintenanceActions
           Resource: "*"
+        - Effect: Allow
+          Action:
+            - ssm:GetParameter
+          Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${DDAPIKey}"
 
   LambdaRole:
     Type: AWS::IAM::Role
@@ -84,4 +95,3 @@ Resources:
         - Id: report-maintenance-windows
           Arn: !GetAtt ReportMaintenanceWindows.Arn
           Input: '{}'
-

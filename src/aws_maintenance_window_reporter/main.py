@@ -5,6 +5,8 @@ import logging
 
 from collections import namedtuple
 
+from aws_maintenance_window_reporter.environment_parameter import get as get_parameter
+
 MaintenanceAction = namedtuple('MaintenanceAction', ['instance_id', 'instance_type', 'service'])
 
 
@@ -32,7 +34,7 @@ def get_rds_pending_maintenance_actions() -> [MaintenanceAction]:
     for response in client.get_paginator('describe_db_clusters').paginate():
         for cluster in response['DBClusters']:
             if cluster.get('PendingModifiedValues'):
-                result.append(create_maintenance_action_from_rds_arn(instance['DBClusterArn']))
+                result.append(create_maintenance_action_from_rds_arn(cluster['DBClusterArn']))
 
     for response in client.get_paginator('describe_pending_maintenance_actions').paginate():
         for action in response['PendingMaintenanceActions']:
@@ -59,7 +61,7 @@ def get_ec2_pending_maintenance_actions() -> [MaintenanceAction]:
 
 
 def report():
-    datadog.initialize()
+    datadog.initialize(api_key=get_parameter("DD_API_KEY"))
 
     timestamp = int(time.time())
     for action in get_ec2_pending_maintenance_actions():
@@ -78,4 +80,3 @@ def report():
 
 def handle(request, context):
     report()
-
