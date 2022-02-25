@@ -9,11 +9,6 @@ phases:
   install:
     runtime-versions:
       python: 3.8
-    commands:
-      - >
-        echo '{"registry-mirrors": ["https://mirror.gcr.io"]}' > /etc/docker/daemon.json
-      - pkill -1 dockerd
-
   build:
     commands:
-      - make S3_BUCKET_PREFIX=${LAMBDA_BUCKET_PREFIX} AWS_REGION=${LAMBDA_BUCKET_REGION} ${MAKE_TARGET:-deploy}
+      - make S3_BUCKET_PREFIX=${LAMBDA_BUCKET_PREFIX} AWS_REGION=${LAMBDA_BUCKET_REGION} ${MAKE_TARGET}
