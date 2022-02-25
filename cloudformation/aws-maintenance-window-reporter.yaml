@@ -22,7 +22,6 @@ Resources:
     Properties:
       Description: Reports outstanding maintenance windows
       FunctionName: report-maintenance-windows
-      Architectures: ["arm64"]
       Code:
         S3Bucket: !If
           - UsePublicBucket
@@ -41,7 +40,7 @@ Resources:
   DDAPIKey:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: aws-maintenance-window-reporter/datadog-api-key
+      Name: /maintenance-window-reporter/datadog-api-key
       Type: String
       Value: !Ref DataDogAPIKey
 
