@@ -1,6 +1,6 @@
 include Makefile.mk
 
-NAME=aws-cloudwatch-log-minder
+NAME=aws-maintenance-window-reporter
 AWS_REGION=eu-central-1
 S3_BUCKET_PREFIX=binxio-public
 S3_BUCKET=$(S3_BUCKET_PREFIX)-$(AWS_REGION)
@@ -87,8 +87,14 @@ deploy-lambda: deploy target/$(NAME)-$(VERSION).zip
 	aws cloudformation deploy \
 		--capabilities CAPABILITY_IAM \
 		--stack-name $(NAME) \
-		--template-file ./cloudformation/aws-cloudwatch-log-minder.yaml \
+		--template-file ./cloudformation/aws-maintenance-window-reporter.yaml \
 		--parameter-override CFNCustomProviderZipFileName=lambdas/$(NAME)-$(VERSION).zip
+
+deploy-pipeline: 
+	aws cloudformation deploy \
+		--capabilities CAPABILITY_IAM \
+		--stack-name $(NAME)-pipeline \
+		--template-file ./cloudformation/cicd-pipeline.yaml
 
 delete-lambda:
 	aws cloudformation delete-stack --stack-name $(NAME)
