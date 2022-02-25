@@ -8,10 +8,10 @@ env:
 phases:
   install:
     runtime-versions:
-      docker: 19
       python: 3.8
     commands:
       - >
+        docker version &&
         mkdir -p ~/.docker/cli-plugins &&
         cd ~/.docker/cli-plugins &&
         curl -sSL https://github.com/docker/buildx/releases/download/v0.7.0/buildx-v0.7.0.linux-amd64
