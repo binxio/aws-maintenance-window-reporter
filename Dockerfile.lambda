@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.8-bullseye@sha256:fd063b00df4c38e90987cf8c5bed0094b3a84b846cb8ad305422596fbde790fc
 RUN apt-get update && apt-get install -y zip
 WORKDIR /lambda
 
