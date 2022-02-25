@@ -14,7 +14,7 @@ Resources:
       Artifacts:
         Type: NO_ARTIFACTS
       Environment:
-        Type: LINUX_CONTAINER
+        Type: ARM_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/amazonlinux2-aarch64-standard:2.0
         PrivilegedMode: true
