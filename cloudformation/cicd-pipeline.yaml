@@ -12,7 +12,7 @@ Resources:
       Description: 'aws-maintenance-window-reporter builder'
       ServiceRole: !Ref 'ProjectRole'
       Artifacts:
-        Type: no_artifacts
+        Type: NO_ARTIFACTS
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
