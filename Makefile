@@ -82,12 +82,13 @@ deploy: target/$(NAME)-$(VERSION).zip
 		s3://$(S3_BUCKET)/lambdas/$(NAME)-$(VERSION).zip \
 		s3://$(S3_BUCKET)/lambdas/$(NAME)-latest.zip
 
-deploy-lambda: deploy target/$(NAME)-$(VERSION).zip
+deploy-lambda: target/$(NAME)-$(VERSION).zip
 	aws cloudformation deploy \
 		--capabilities CAPABILITY_IAM \
 		--stack-name $(NAME) \
 		--template-file ./cloudformation/aws-maintenance-window-reporter.yaml \
-		--parameter-override CFNCustomProviderZipFileName=lambdas/$(NAME)-$(VERSION).zip
+		--parameter-override CFNCustomProviderZipFileName=lambdas/$(NAME)-$(VERSION).zip \
+                --parameter-override DataDogAPIKey=$$DD_API_KEY
 
 deploy-pipeline: 
 	aws cloudformation deploy \
