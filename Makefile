@@ -87,8 +87,9 @@ deploy-lambda: target/$(NAME)-$(VERSION).zip
 		--capabilities CAPABILITY_IAM \
 		--stack-name $(NAME) \
 		--template-file ./cloudformation/aws-maintenance-window-reporter.yaml \
-		--parameter-override CFNCustomProviderZipFileName=lambdas/$(NAME)-$(VERSION).zip \
-                --parameter-override DataDogAPIKey=$$DD_API_KEY
+		--parameter-override \
+		    CFNCustomProviderZipFileName=lambdas/$(NAME)-$(VERSION).zip \
+            DataDogAPIKey=$$DD_API_KEY
 
 deploy-pipeline: 
 	aws cloudformation deploy \
