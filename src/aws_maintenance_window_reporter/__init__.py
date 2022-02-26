@@ -1,1 +1,1 @@
-from aws_maintenance_window_reporter.main import handle, report
+from aws_maintenance_window_reporter.maintenance_actions import handle, report
