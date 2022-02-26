@@ -1,5 +1,5 @@
-import boto3
 from datetime import datetime, timedelta
+
 
 def boundary_to_datetime(now: datetime, window: str) -> datetime:
     """
@@ -13,7 +13,7 @@ def boundary_to_datetime(now: datetime, window: str) -> datetime:
     >>> boundary_to_datetime(datetime.fromisoformat("2022-12-30T16:34:12+00:00"), "Wed:03:15")
     datetime.datetime(2023, 1, 4, 3, 15, tzinfo=datetime.timezone.utc)
     """
-    days  = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
     day, hour, minute = window.split(":", 2)
     for weekday, name in enumerate(days):
@@ -21,9 +21,12 @@ def boundary_to_datetime(now: datetime, window: str) -> datetime:
             break
 
     remaining_days = (weekday + 7 - now.weekday()) % 7
-    return (now +timedelta(days=remaining_days)).replace(hour=int(hour), minute=int(minute), second=0, microsecond=0)
+    return (now + timedelta(days=remaining_days)).replace(
+        hour=int(hour), minute=int(minute), second=0, microsecond=0
+    )
 
-def next_window(now:datetime, aws_maintenance_window: str) -> (datetime, datetime):
+
+def next_window(now: datetime, aws_maintenance_window: str) -> (datetime, datetime):
     """
     calculates the next maintenance window. The format of the
     aws_maintenance_window is "ddd:hh24:mi-ddd:hh24:mi" where the valid days are:
@@ -39,7 +42,8 @@ def next_window(now:datetime, aws_maintenance_window: str) -> (datetime, datetim
 
 _cache: dict = {}
 
-def get_next_maintenance_window(rds: object, arn: str) ->(datetime, datetime):
+
+def get_next_maintenance_window(rds: object, arn: str) -> (datetime, datetime):
     global _cache
 
     if arn not in _cache:

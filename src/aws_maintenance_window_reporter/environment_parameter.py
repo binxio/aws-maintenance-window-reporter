@@ -18,7 +18,8 @@ def get(name: str) -> str:
     value = os.getenv(name)
     if value and value.startswith("ssm://"):
         name = value.removeprefix("ssm://")
-        value = boto3.client("ssm").get_parameter(Name=name, WithDecryption=True)["Parameter"]["Value"]
+        response = boto3.client("ssm").get_parameter(Name=name, WithDecryption=True)
+        value = response["Parameter"]["Value"]
 
     _cache[name] = value
 
