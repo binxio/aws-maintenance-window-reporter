@@ -10,7 +10,7 @@ botostubs = "*"
 twine = "*"
 
 [packages]
-aws-maintenance-window-reporter = {editable = true,path = "."}
+aws-maintenance-window-reporter = {editable = true, path = "."}
 
 [requires]
 python_version = "3.8"
