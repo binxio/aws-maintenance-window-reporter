@@ -14,7 +14,7 @@ def report(do_send_metrics: bool = True):
     reports upcoming maintenance windows. If `do_send_metrics` is set, the metric
     'aws.pending.maintenance.windows' will send to DataDog too.
     """
-    datadog.initialize(api_key=get_parameter("DD_API_KEY"))
+    datadog.initialize(api_key=get_parameter("DD_API_KEY"), host_name="lambda")
 
     timestamp = int(time.time())
     for action in ec2.get_pending_maintenance_actions():
