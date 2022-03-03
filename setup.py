@@ -12,7 +12,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='aws-maintenance-window-reporter',
-    version="0.1.6",
+    version="0.1.7",
     url='https://github.com/binxio/aws-maintenance-window-reporter',
     license='BSD',
     author='Mathijs van Mourick',
