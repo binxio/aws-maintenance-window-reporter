@@ -1,11 +1,10 @@
 """
 The AWS Maintenance Window Reporter
 """
+from os import path
 from setuptools import find_packages, setup
 
-dependencies = ['boto3', 'datadog']
-
-from os import path
+dependencies = ['boto3', 'datadog', 'boto3-stubs[rds]']
 
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:

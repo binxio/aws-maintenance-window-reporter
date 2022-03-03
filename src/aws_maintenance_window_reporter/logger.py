@@ -1,3 +1,6 @@
+"""
+initializes the logging subsystem for this application
+"""
 import os
 import logging
 

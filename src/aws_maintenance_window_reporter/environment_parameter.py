@@ -1,7 +1,9 @@
+"""
+retrieve environment variables and resolve references to AWS Parameter Store Parameters.
+"""
+from typing import Dict
 import os
 import boto3
-
-_cache: dict = {}
 
 
 def get(name: str) -> str:
@@ -11,15 +13,19 @@ def get(name: str) -> str:
 
     The resulting value is cached, so subsequent requests will return the same value.
     """
-    global _cache
     if name in _cache:
         return _cache[name]
 
     value = os.getenv(name)
     if value and value.startswith("ssm://"):
-        response = boto3.client("ssm").get_parameter(Name=value[6:], WithDecryption=True)
+        response = boto3.client("ssm").get_parameter(
+            Name=value[6:], WithDecryption=True
+        )
         value = response["Parameter"]["Value"]
 
     _cache[name] = value
-
     return value
+
+
+# cache of retrieved environment variables
+_cache: Dict[str, str] = {}

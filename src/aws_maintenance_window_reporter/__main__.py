@@ -1,8 +1,14 @@
+"""
+CLI for reporting upcoming maintenance windows
+"""
 import argparse
 from aws_maintenance_window_reporter import report
 
 
 def main():
+    """
+    CLI entry point
+    """
     parser = argparse.ArgumentParser(
         description="report maintenance windows on AWS resources."
     )

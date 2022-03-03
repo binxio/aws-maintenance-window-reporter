@@ -8,6 +8,7 @@ boto3 = "*"
 pytest = "*"
 botostubs = "*"
 twine = "*"
+pylint = "*"
 
 [packages]
 aws-maintenance-window-reporter = {editable = true, path = "."}
