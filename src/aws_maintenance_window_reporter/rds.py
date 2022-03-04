@@ -49,13 +49,17 @@ def get_pending_maintenance_actions() -> [MaintenanceAction]:
         for action in response["PendingMaintenanceActions"]:
             arn = action["ResourceIdentifier"]
             not_before, _ = get_next_maintenance_window_of_resource(client, arn)
-            for detail in action["PendingMaintenanceActionDetails"]:
-                description = detail["Description"]
-                result.append(
-                    _create_maintenance_action_from_rds_arn(
-                        action["ResourceIdentifier"], not_before, description
-                    )
+            description = "; ".join(
+                map(
+                    lambda d: d["Description"],
+                    action["PendingMaintenanceActionDetails"],
                 )
+            )
+            result.append(
+                _create_maintenance_action_from_rds_arn(
+                    action["ResourceIdentifier"], not_before, description
+                )
+            )
 
     return result
 
@@ -102,6 +106,6 @@ def get_next_maintenance_window_of_resource(
             response = rds.describe_db_instances(DBInstanceIdentifier=arn)
             window = response["DBInstances"][0]["PreferredMaintenanceWindow"]
 
-        _cache[arn] = next_maintenance_window(datetime.utcnow(), window)
+        _cache[arn] = next_maintenance_window(window, datetime.utcnow())
 
     return _cache[arn]
