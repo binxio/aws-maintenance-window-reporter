@@ -1,6 +1,7 @@
 """
 represents an AWS maintenance windows
 """
+import os
 from collections import namedtuple
 import datadog
 from aws_maintenance_window_reporter.logger import log
@@ -8,6 +9,10 @@ from aws_maintenance_window_reporter.logger import log
 MaintenanceAction = namedtuple(
     "MaintenanceAction",
     ["instance_id", "instance_type", "service", "not_before", "description"],
+)
+
+datadog_tags = list(
+    map(lambda s: s.strip(), os.environ.get("DATADOG_TAGS", "").split(","))
 )
 
 
@@ -25,12 +30,14 @@ def send_metric(action: MaintenanceAction, timestamp: int, do_send_metrics: bool
         action.not_before,
     )
     if do_send_metrics:
+        tags = [
+            f"service:{action.service}",
+            f"{action.instance_type}:{action.instance_id}",
+        ]
+        tags.extend(datadog_tags)
         datadog.api.Metric.send(
             metric="aws.pending.maintenance.actions",
             type="gauge",
-            tags=[
-                f"service:{action.service}",
-                f"{action.instance_type}:{action.instance_id}",
-            ],
+            tags=tags,
             points=[(timestamp, 1)],
         )
