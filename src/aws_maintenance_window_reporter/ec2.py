@@ -16,8 +16,11 @@ def get_pending_maintenance_actions() -> [MaintenanceAction]:
         {
             "Name": "event.code",
             "Values": [
-                "system-maintenance",
+                "instance-stop",
+                "instance-reboot",
                 "instance-retirement",
+                "system-reboot",
+                "system-maintenance",
             ],
         }
     ]
