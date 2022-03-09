@@ -1,5 +1,5 @@
 """
-represents an AWS maintenance windows
+represents an AWS maintenance actions and windows
 """
 import os
 from collections import namedtuple
@@ -18,25 +18,40 @@ datadog_tags = list(
 
 def send_metric(action: MaintenanceAction, timestamp: int, do_send_metrics: bool):
     """
-    sends the upcoming maintenance windows as a count in the
-    metric "aws.pending.maintenance.actions" to DataDog.
+    If the action has a `not_before` it counts as "aws.pending.maintenance.windows" to DataDog. Otherwise
+    it is a  "aws.pending.maintenance.actions"
     """
-    log.info(
-        "%s %s %s: %s on %s",
-        action.service,
-        action.instance_type,
-        action.instance_id,
-        action.description,
-        action.not_before,
-    )
+    if action.not_before:
+        log.info(
+            "Maintenance window of %s %s %s: %s on %s",
+            action.service,
+            action.instance_type,
+            action.instance_id,
+            action.description,
+            action.not_before,
+        )
+    else:
+        log.info(
+            "Maintenance action available for %s %s %s: %s",
+            action.service,
+            action.instance_type,
+            action.instance_id,
+            action.description,
+        )
+
     if do_send_metrics:
         tags = [
             f"service:{action.service}",
             f"{action.instance_type}:{action.instance_id}",
         ]
         tags.extend(datadog_tags)
+        metric_name = (
+            "aws.pending.maintenance.windows"
+            if action.not_before
+            else "aws.pending.maintenance.actions"
+        )
         datadog.api.Metric.send(
-            metric="aws.pending.maintenance.actions",
+            metric=metric_name,
             type="gauge",
             tags=tags,
             points=[(timestamp, 1)],

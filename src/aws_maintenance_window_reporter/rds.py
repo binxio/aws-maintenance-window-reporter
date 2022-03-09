@@ -47,12 +47,18 @@ def get_pending_maintenance_actions() -> [MaintenanceAction]:
         "describe_pending_maintenance_actions"
     ).paginate():
         for action in response["PendingMaintenanceActions"]:
-            arn = action["ResourceIdentifier"]
-            not_before, _ = get_next_maintenance_window_of_resource(client, arn)
+            details = action["PendingMaintenanceActionDetails"]
+            apply_dates = sorted(
+                map(
+                    lambda d: d["CurrentApplyDate"],
+                    filter(lambda d: "CurrentApplyDate" in d, details),
+                )
+            )
+            not_before = apply_dates[0] if apply_dates else None
             description = "; ".join(
                 map(
                     lambda d: d["Description"],
-                    action["PendingMaintenanceActionDetails"],
+                    details,
                 )
             )
             result.append(
