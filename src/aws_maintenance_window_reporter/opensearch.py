@@ -33,8 +33,8 @@ def get_pending_maintenance_actions() -> [MaintenanceAction]:
             result.append(
                 MaintenanceAction(
                     domain.get("DomainName"),
-                    "opensearch",
                     "domainid",
+                    "opensearch",
                     update_date if update_date and update_date.timestamp() != 0 else None,
                     service_option.get("Description"),
                 )
