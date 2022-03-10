@@ -4,7 +4,13 @@ reports upcoming AWS maintenance windows
 import time
 import datadog
 
-from aws_maintenance_window_reporter import ec2, rds, redshift, maintenance_action
+from aws_maintenance_window_reporter import (
+    ec2,
+    rds,
+    redshift,
+    opensearch,
+    maintenance_action,
+)
 
 from aws_maintenance_window_reporter.environment_parameter import get as get_parameter
 
@@ -24,6 +30,9 @@ def report(do_send_metrics: bool = True):
         maintenance_action.send_metric(action, timestamp, do_send_metrics)
 
     for action in redshift.get_pending_maintenance_actions():
+        maintenance_action.send_metric(action, timestamp, do_send_metrics)
+
+    for action in opensearch.get_pending_maintenance_actions():
         maintenance_action.send_metric(action, timestamp, do_send_metrics)
 
 
