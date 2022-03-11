@@ -56,6 +56,8 @@ Resources:
             - rds:DescribeDBInstances
             - rds:DescribeDBClusters
             - rds:DescribePendingMaintenanceActions
+            - es:ListDomainNames
+            - es:DescribeDomains
           Resource: "*"
         - Effect: Allow
           Action:
