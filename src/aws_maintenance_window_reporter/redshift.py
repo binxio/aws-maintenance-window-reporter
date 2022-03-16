@@ -11,25 +11,25 @@ from aws_maintenance_window_reporter.aws_maintenance_window import (
 )
 
 
-def get_pending_maintenance_actions() -> [MaintenanceAction]:
+def get_pending_maintenance_actions(
+    session: boto3.session.Session,
+) -> [MaintenanceAction]:
     """
     gets a list of pending maintenance actions on redshift Clusters
     """
     result = []
 
-    client = boto3.client("redshift")
+    client = session.client("redshift")
 
     for response in client.get_paginator("describe_clusters").paginate():
         for cluster in response["Clusters"]:
             if cluster.get("PendingModifiedValues"):
-                not_before, _ = next_maintenance_window(
-                    cluster["PreferredMaintenanceWindow"],
-                )
+                not_before = cluster.get("NextMaintenanceWindowStartTime")
                 result.append(
                     MaintenanceAction(
                         cluster["ClusterIdentifier"],
-                        "redshift",
                         "clusteridentifier",
+                        "redshift",
                         not_before,
                         "Pending modified values",
                     )

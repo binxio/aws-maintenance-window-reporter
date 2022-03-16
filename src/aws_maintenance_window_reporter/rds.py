@@ -13,22 +13,23 @@ from aws_maintenance_window_reporter.aws_maintenance_window import (
 )
 
 
-def get_pending_maintenance_actions() -> [MaintenanceAction]:
+def get_pending_maintenance_actions(
+    session: boto3.session.Session,
+) -> [MaintenanceAction]:
     """
     gets a list of pending maintenance actions on RDS clusters and instances
     """
     result = []
 
-    client = boto3.client("rds")
+    client = session.client("rds")
 
     for response in client.get_paginator("describe_db_instances").paginate():
         for instance in response["DBInstances"]:
             if instance.get("PendingModifiedValues"):
                 arn = instance["DBInstanceArn"]
-                not_before, _ = get_next_maintenance_window_of_resource(client, arn)
                 result.append(
                     _create_maintenance_action_from_rds_arn(
-                        arn, not_before, "Pending modified values"
+                        arn, None, "Pending modified values"
                     )
                 )
 
@@ -39,7 +40,7 @@ def get_pending_maintenance_actions() -> [MaintenanceAction]:
             if cluster.get("PendingModifiedValues"):
                 result.append(
                     _create_maintenance_action_from_rds_arn(
-                        arn, not_before, "Pending modified values"
+                        arn, None, "Pending modified values"
                     )
                 )
 

@@ -31,7 +31,7 @@ setup(
     test_suite='tests',
     entry_points={
         'console_scripts': [
-            'aws-mws = aws_maintenance_window_reporter.__main__:main'
+            'aws-maintenance-windows = aws_maintenance_window_reporter.__main__:main'
         ],
     },
     classifiers=[

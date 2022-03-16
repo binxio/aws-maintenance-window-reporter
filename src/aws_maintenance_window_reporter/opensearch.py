@@ -11,13 +11,15 @@ from aws_maintenance_window_reporter.aws_maintenance_window import (
 )
 
 
-def get_pending_maintenance_actions() -> [MaintenanceAction]:
+def get_pending_maintenance_actions(
+    session: boto3.session.Session,
+) -> [MaintenanceAction]:
     """
     gets a list of pending maintenance actions on opensearch clusters
     """
     result = []
 
-    client = boto3.client("opensearch")
+    client = session.client("opensearch")
 
     domain_names = list(
         map(lambda d: d["DomainName"], client.list_domain_names()["DomainNames"])
@@ -35,7 +37,9 @@ def get_pending_maintenance_actions() -> [MaintenanceAction]:
                     domain.get("DomainName"),
                     "domainid",
                     "opensearch",
-                    update_date if update_date and update_date.timestamp() != 0 else None,
+                    update_date
+                    if update_date and update_date.timestamp() != 0
+                    else None,
                     service_option.get("Description"),
                 )
             )

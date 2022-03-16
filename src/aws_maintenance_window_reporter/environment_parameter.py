@@ -6,7 +6,7 @@ import os
 import boto3
 
 
-def get(name: str) -> str:
+def get(name: str, session: boto3.session.Session) -> str:
     """
     gets the environment variable value specified by `name`. if the `value`
     starts with ssm://, it will return the value of the SSM parameter with the specified name.
@@ -18,7 +18,7 @@ def get(name: str) -> str:
 
     value = os.getenv(name)
     if value and value.startswith("ssm://"):
-        response = boto3.client("ssm").get_parameter(
+        response = session.client("ssm").get_parameter(
             Name=value[6:], WithDecryption=True
         )
         value = response["Parameter"]["Value"]

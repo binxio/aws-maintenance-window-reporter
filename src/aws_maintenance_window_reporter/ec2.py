@@ -5,12 +5,14 @@ import boto3
 from aws_maintenance_window_reporter.maintenance_action import MaintenanceAction
 
 
-def get_pending_maintenance_actions() -> [MaintenanceAction]:
+def get_pending_maintenance_actions(
+    session: boto3.session.Session,
+) -> [MaintenanceAction]:
     """
     gets a list of pending maintenance actions on EC2 instances
     """
     result = []
-    client = boto3.client("ec2")
+    client = session.client("ec2")
 
     filters = [
         {
