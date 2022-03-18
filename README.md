@@ -66,12 +66,12 @@ To deploy the maintenance window reporter as an AWS Lambda, type:
 ```shell
 git clone https://github.com/binxio/aws-maintenance-window-reporter.git
 cd aws-maintenance-window-reporter
-read -p 'DD API key SSM parameter name >' PARAMETER_NAME
+read -p 'DD API key >' DD_API_KEY
 aws cloudformation deploy \
 	--capabilities CAPABILITY_IAM \
 	--stack-name aws-maintenance-window-reporter \
 	--template-file ./cloudformation/aws-maintenance-window-reporter.yaml \ 
-	--parameter-overrides DataDogAPIKeyParameterName=PARAMETER_NAME
+	--parameter-overrides "DataDogAPIKey=$DD_API_KEY"
 ```
 This will install the maintenance window reporter in your AWS account and run every hour.
 
