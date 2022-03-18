@@ -22,16 +22,21 @@ windows is pending.
 
 The metrics send are:
 
-  - aws.pending.maintenance.actions  - number of available maintenance actions
-  - aws.pending.maintenance.windows  - number of scheduled maintenance windows
+- aws.pending.maintenance.actions
+
+  number of available maintenance actions
+
+- aws.pending.maintenance.windows 
+
+  number of scheduled maintenance windows
 
 the metrics will be tagged with the aws service name and the following resource ids:
 
-  - domainid (opensearch)
-  - dbinstanceidentifier (rds)
-  - dbclusteridentifier (rds)
-  - instance-id (ec2)
-  - clusteridentifier (opensearch)
+- domainid (opensearch)
+- dbinstanceidentifier (rds)
+- dbclusteridentifier (rds)
+- instance-id (ec2)
+- clusteridentifier (opensearch)
 
 These tags are in accordance with the AWS tags defined by DataDog for the respective resources.
    
@@ -45,9 +50,14 @@ INFO: Maintenance windows of opensearch domainid es-2: An update to release R202
 ```
 
 ## Environment
-DD_API_KEY   - specifies the Datadog API key. if the value has the prefix ssm:// the api key will be 
-               retrieved by name the SSM Parameter Store eg (ssm://datadog-api-key) 
-DATADOG_TAGS - additional datadog tags to add to the metric in the form key:value,key2:value,...            
+- DD_API_KEY
+
+  Specifies the Datadog API key. if the value has the prefix ssm:// the api key will be  retrieved 
+  by name the SSM Parameter Store eg (ssm://datadog-api-key)
+
+- DATADOG_TAGS
+
+  additional datadog tags to add to the metric in the form key:value,key2:value,...            
              
 ## Alternatives
 The AWS Health services also provides insight into scheduled changes. The AWS Health API 
